@@ -51,7 +51,6 @@ pipeline {
 
                         sh 'git status'
                         sh 'git branch'
-                        sh 'git checkout jenkins-jobs'
 
                         sh 'git add .'
                         sh 'git commit -m "ci: version bump"'
