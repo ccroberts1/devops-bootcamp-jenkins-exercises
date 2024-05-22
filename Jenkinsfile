@@ -29,16 +29,16 @@ pipeline {
                 }
             }
         }
-        stage("build app") {
-            steps {
-                dir("app") {
-                    script {
-                        echo "Building the app..."
-                        sh "npm build"
-                    }
-                }
-            }
-        }
+//         stage("build app") {
+//             steps {
+//                 dir("app") {
+//                     script {
+//                         echo "Building the app..."
+//                         sh "npm build"
+//                     }
+//                 }
+//             }
+//         }
         stage("build image") {
             steps {
                 script {
