@@ -17,13 +17,15 @@ pipeline {
         }
         stage("increment version") {
             steps {
-                script {
-                    echo "Incrementing app version..."
-                    sh "npm version minor"
-                    def packageJson = readJSON file: 'package.json'
-                    def version = packageJson.version
+                dir("app") {
+                    script {
+                        echo "Incrementing app version..."
+                        sh "npm version minor"
+                        def packageJson = readJSON file: 'package.json'
+                        def version = packageJson.version
 
-                    env.IMAGE_NAME = "$version-$BUILD_NUMBER"
+                        env.IMAGE_NAME = "$version-$BUILD_NUMBER"
+                    }
                 }
             }
         }
