@@ -50,11 +50,11 @@ pipeline {
 
                         sh 'git status'
                         sh 'git branch'
-                        sh 'git config --list'
+                        sh 'git checkout jenkins-jobs'
 
                         sh 'git add .'
                         sh 'git commit -m "ci: version bump"'
-                        sh "git push https://${USER}:${PASS}@github.com/${USER}/devops-bootcamp-jenkins-exercises"
+                        sh "git push https://${USER}:${PASS}@github.com/${USER}/devops-bootcamp-jenkins-exercises HEAD:jenkins-jobs"
                     }
                 }
             }
