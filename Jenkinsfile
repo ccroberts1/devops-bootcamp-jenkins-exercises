@@ -41,16 +41,6 @@ pipeline {
                 }
             }
         }
-        stage("deploy") {
-            steps {
-                dir("app") {
-                    script {
-                        echo "Deploying the app..."
-                        sh "node server.js"
-                    }
-                }
-            }
-        }
         stage("commit version update") {
             steps {
                 script {
