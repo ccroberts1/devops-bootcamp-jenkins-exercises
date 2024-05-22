@@ -54,7 +54,7 @@ pipeline {
 
                         sh 'git add .'
                         sh 'git commit -m "ci: version bump"'
-                        sh "git push https://${USER}:${PASS}@github.com/${USER}/devops-bootcamp-jenkins-exercises.git HEAD:jenkins-jobs"
+                        sh "git push https://${USER}:${PASS}github.com/${USER}/devops-bootcamp-jenkins-exercises.git HEAD:jenkins-jobs"
                     }
                 }
             }
