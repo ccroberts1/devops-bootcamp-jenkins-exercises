@@ -1,3 +1,6 @@
+#!/user/bin/env groovy
+@Library('jenkins-shared')_
+
 pipeline {
     agent any
     tools {
@@ -8,9 +11,7 @@ pipeline {
                 steps {
                     dir("app"){
                         script {
-                            echo "Testing the app..."
-                            sh "npm install"
-                            sh "npm run test"
+                            test()
                         }
                     }
                 }
@@ -19,12 +20,7 @@ pipeline {
             steps {
                 dir("app") {
                     script {
-                        echo "Incrementing app version..."
-                        sh "npm version minor"
-                        def packageJson = readJSON file: 'package.json'
-                        def version = packageJson.version
-
-                        env.IMAGE_NAME = "$version-$BUILD_NUMBER"
+                        incrementVersion()
                     }
                 }
             }
@@ -32,29 +28,14 @@ pipeline {
         stage("build image") {
             steps {
                 script {
-                    echo "Building the Docker image..."
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        sh "docker build -t ccroberts1/demo-app:${IMAGE_NAME} ."
-                        sh 'echo $PASS | docker login -u ${USER} --password-stdin'
-                        sh "docker push ccroberts1/demo-app:${IMAGE_NAME}"
-                    }
+                   buildImage()
                 }
             }
         }
         stage("commit version update") {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
-                        sh 'git config --global user.email "jenkins@example.com"'
-                        sh 'git config --global user.name "jenkins"'
-
-                        sh 'git status'
-                        sh 'git branch'
-
-                        sh 'git add .'
-                        sh 'git commit -m "ci: version bump"'
-                        sh "git push https://${TOKEN}@github.com/ccroberts1/devops-bootcamp-jenkins-exercises.git HEAD:jenkins-jobs"
-                    }
+                    commitVersionUpdate()
                 }
             }
         }
