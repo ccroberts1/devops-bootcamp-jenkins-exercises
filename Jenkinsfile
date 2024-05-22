@@ -34,7 +34,7 @@ pipeline {
                 dir("app") {
                     script {
                         echo "Building the app..."
-                        sh "npm run build"
+                        sh "npm build"
                     }
                 }
             }
