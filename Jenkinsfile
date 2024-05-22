@@ -31,9 +31,11 @@ pipeline {
         }
         stage("build app") {
             steps {
-                script {
-                    echo "Building the app..."
-                    sh "npm run build"
+                dir("app") {
+                    script {
+                        echo "Building the app..."
+                        sh "npm run build"
+                    }
                 }
             }
         }
@@ -51,9 +53,11 @@ pipeline {
         }
         stage("deploy") {
             steps {
-                script {
-                    echo "Deploying the app..."
-                    sh "node server.js"
+                dir("app") {
+                    script {
+                        echo "Deploying the app..."
+                        sh "node server.js"
+                    }
                 }
             }
         }
