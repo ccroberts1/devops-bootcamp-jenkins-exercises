@@ -25,32 +25,51 @@ pipeline {
             }
         }
         stage("build app") {
-                    steps {
-                        script {
-                            echo "Building the app..."
-                            sh "npm run build"
-                        }
-                    }
+            steps {
+                script {
+                    echo "Building the app..."
+                    sh "npm run build"
+                }
+            }
         }
         stage("build image") {
-                    steps {
-                        script {
-                            echo "Building the Docker image..."
-                            withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                                sh "docker build -t ccroberts1/demo-app:${IMAGE_NAME} ."
-                                sh "echo $PASS | docker login -u ${USER} --password-stdin"
-                                sh "docker push ccroberts1/demo-app:${IMAGE_NAME}"
-                            }
-                        }
+            steps {
+                script {
+                    echo "Building the Docker image..."
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                        sh "docker build -t ccroberts1/demo-app:${IMAGE_NAME} ."
+                        sh "echo $PASS | docker login -u ${USER} --password-stdin"
+                        sh "docker push ccroberts1/demo-app:${IMAGE_NAME}"
                     }
+                }
+            }
         }
         stage("deploy") {
-                    steps {
-                        script {
-                            echo "Deploying the app..."
-                            sh "node server.js"
-                        }
+            steps {
+                script {
+                    echo "Deploying the app..."
+                    sh "node server.js"
+                }
+            }
+        }
+        stage("commit version update") {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                        sh 'git config --global user.email "jenkins@example.com"'
+                        sh 'git config --global user.name "jenkins"'
+
+                        sh 'git status'
+                        sh 'git branch'
+                        sh 'git config --list'
+
+                        sh "git remote set-url origin https://${USER}:${PASS}@github.com/ccroberts1/devops-bootcamp-jenkins-exercises.git"
+                        sh 'git add .'
+                        sh 'git commit -m "ci: version bump"'
+                        sh 'git push origin HEAD:jenkins-jobs'
                     }
+                }
+            }
         }
     }
 }
