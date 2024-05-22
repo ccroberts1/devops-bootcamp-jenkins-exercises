@@ -3,12 +3,25 @@ pipeline {
     stages {
         stage("test") {
                 steps {
-                    echo "Testing the app..."
+                    dir("app"){
+                        script {
+                            echo "Testing the app..."
+                            sh "npm install"
+                            sh "npm run test"
+                        }
+                    }
                 }
         }
         stage("increment version") {
             steps {
-                echo "Incrementing app version..."
+                script {
+                    echo "Incrementing app version..."
+                    sh "npm version minor"
+                    def packageJson = readJSON file: 'package.json'
+                    def version = packageJson.version
+
+                    env.IMAGE_NAME = "$version-$BUILD_NUMBER"
+                }
             }
         }
         stage("build app") {
