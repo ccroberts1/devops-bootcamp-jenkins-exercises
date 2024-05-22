@@ -52,10 +52,9 @@ pipeline {
                         sh 'git branch'
                         sh 'git config --list'
 
-                        sh "git remote add origin https://github.com/ccroberts1/devops-bootcamp-jenkins-exercises.git"
                         sh 'git add .'
                         sh 'git commit -m "ci: version bump"'
-                        sh 'git push origin HEAD:jenkins-jobs'
+                        sh "git push https://${USER}:${PASS}@github.com/${USER}/devops-bootcamp-jenkins-exercises"
                     }
                 }
             }
