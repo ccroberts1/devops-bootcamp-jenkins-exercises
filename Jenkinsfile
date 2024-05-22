@@ -44,8 +44,7 @@ pipeline {
         stage("commit version update") {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        def encodedPassword = URLEncoder.encode("${PASS}", 'UTF-8')
+                    withCredentials([string(credentialsId: 'github-token', variable: 'TOKEN')]) {
                         sh 'git config --global user.email "jenkins@example.com"'
                         sh 'git config --global user.name "jenkins"'
 
@@ -54,7 +53,7 @@ pipeline {
 
                         sh 'git add .'
                         sh 'git commit -m "ci: version bump"'
-                        sh "git push https://${USER}:${PASS}github.com/${USER}/devops-bootcamp-jenkins-exercises.git HEAD:jenkins-jobs"
+                        sh "git push https://${TOKEN}@github.com/ccroberts1/devops-bootcamp-jenkins-exercises.git HEAD:jenkins-jobs"
                     }
                 }
             }
